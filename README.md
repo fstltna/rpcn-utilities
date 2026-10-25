@@ -8,7 +8,9 @@ Edit "rmc" and change the settings at the top if your RPCN server is not in /roo
 You also need to have my RPCN Startup Script installed.
 
 I suggest you then add this to your /root/.bashrc file:
-	export PATH=/root/bin:/root/rpcn-utilities:$PATH
+
+-	export PATH=/root/bin:/root/rpcn-utilities:$PATH
+
 You will need to install the required perl modules (as root):
 
 - /root/rpcn-utilities/installdeps
