@@ -12,7 +12,7 @@ my $COFFEEMUDDIR = "/home/cmowner/CoffeeMud";
 my $BackupCommand = "/home/cmowner/CoffeeBackup/coffeebackup.pl -snapshot";
 my $MUDLog = "/home/cmowner/CoffeeMud/mud.log";
 my $Pager = "/usr/bin/less";
-my $CMCDir = "/home/cmowner/CoffeeManagementConsole";
+my $RMCDir = "/home/cmowner/CoffeeManagementConsole";
 my $BackupToolDir = "/home/cmowner/CoffeeBackup";
 my $StartupDir = "/home/cmowner/CoffeeStartup";
 my $UpdateCommand = "/usr/bin/git pull";
@@ -22,8 +22,8 @@ my $MUDPORT = "5555";
 my $TEXTDIR = "$COFFEEMUDDIR/resources/text";
 my $FAKEDBOLDDIR = "$COFFEEMUDDIR/oldcm/resources/fakedb";
 my $FAKEDBNEWDIR = "$COFFEEMUDDIR/resources/fakedb";
-my $UpdateStepsFile = "$CMCDir/UpdateSteps.txt";
-my $MigrateFakeDB = "$CMCDir/mudUpdate.sh";
+my $UpdateStepsFile = "$RMCDir/UpdateSteps.txt";
+my $MigrateFakeDB = "$RMCDir/mudUpdate.sh";
 my $PagerCommand = "/usr/bin/less";
 my $TelnetCmd = "/usr/bin/telnet";
 my $DiskFreeCmd = "/usr/bin/df -h";
@@ -34,7 +34,7 @@ my $ShellCommand = "/usr/bin/bash";
 # No changes below here
 ###################################################
 
-my $CMC_ver = "1.14.0";
+my $RMC_ver = "1.0.0";
 my $Record = "false";	# Are results saved?
 my $TempDir = "/tmp";
 my $RobotName = "";
@@ -54,13 +54,13 @@ sub PrintDebugCommand
 	my $entered = <STDIN>;
 }
 
-my $d = new UI::Dialog ( backtitle => "CoffeeMUD Management Console v$CMC_ver", height => 20, width => 65, listheight => 5,
+my $d = new UI::Dialog ( backtitle => "RPCN Management Console v$RMC_ver", height => 20, width => 65, listheight => 5,
 	order => [ 'ascii', 'cdialog', 'xdialog' ]);
 
-my $windowtitle = "Welcome to the CoffeeMUD Management Console!";
-my $enjoyedtitle = "We hope you enjoyed CMC!";
+my $windowtitle = "Welcome to the RPCN Management Console!";
+my $enjoyedtitle = "We hope you enjoyed RMC!";
 my $introtext =
-"This is the CoffeeMUD Management Console, a utility for CoffeeMUD operators
+"This is the RPCN Management Console, a utility for RPCN operators
 to manage their servers from a text UI rather than the command line.";
 
 $d->msgbox( title => $windowtitle, text => $introtext );
@@ -74,7 +74,7 @@ my $menuselection = "";
 
 sub CheckServerStatus
 {
-	my $running=`ps ax|grep coffee_mud|grep -v grep`;
+	my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
 	if ($running ne "")
 	{
 		$ServerStatus = "Running";
@@ -306,7 +306,7 @@ sub UpdateToolsMenu
 		$WantRespawn="OFF";
 	}
 	$menuselection = $d->menu( title => "Update Utilities Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
-                            list => [ '1', 'Update CMC',
+                            list => [ '1', 'Update RMC',
                                       '2', 'Update Backup',
                                       '3', 'Update Startup',
                                       'q', 'Main Menu' ] );
@@ -323,8 +323,8 @@ sub UpdateTools
 		}
 		elsif ($menuselection eq "1")
 		{
-			# Update CMC
-			DoUpdate($CMCDir);
+			# Update RMC
+			DoUpdate($RMCDir);
 		}
 		elsif ($menuselection eq "2")
 		{
@@ -356,7 +356,7 @@ sub UpdateCMMenu
 		$WantRespawn="OFF";
 	}
 
-	$menuselection = $d->menu( title => "CoffeeMUD Update Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
+	$menuselection = $d->menu( title => "RPCN Update Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'How to Update',
                                       '2', 'Backup MUD',
                                       '3', 'Backup fakedb',
@@ -423,7 +423,7 @@ sub UpdateCM
 				$DidBuild = "y";
 				chdir($COFFEEMUDDIR);
 				system("touch $COFFEEMUDDIR/nostart");
-				my $running=`ps ax|grep coffee_mud|grep -v grep`;
+				my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
 				if ($running ne "")
 				{
 					# Process is running, kill it
@@ -554,7 +554,7 @@ sub MainMenu
                                       '16', 'Ubuntu Version',
                                       '17', 'Utilities',
                                       '18', 'Spawn Shell',
-                                      'q', 'Quit CMC' ] );
+                                      'q', 'Quit RMC' ] );
 }
 
 while (-1)
@@ -562,7 +562,7 @@ while (-1)
 	MainMenu();
 	if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
 	{
-		$d->msgbox( title => $enjoyedtitle, text => "Thanks for using CMC..." );
+		$d->msgbox( title => $enjoyedtitle, text => "Thanks for using RMC..." );
 		exit 0;
 	}
 	if ($menuselection eq "1")
@@ -583,8 +583,8 @@ while (-1)
 	}
 	elsif ($menuselection eq "3")
 	{
-		$d->msgbox( text => "To exit the CoffeeMUD console and return to CMC press CTRL-A CTRL-D" );
-		system("screen -r Coffeemud");
+		$d->msgbox( text => "To exit the RPCN console and return to RMC press CTRL-A CTRL-D" );
+		system("screen -r RPCN");
 	}
 	elsif ($menuselection eq "4")
 	{
@@ -658,7 +658,7 @@ while (-1)
 	{
 		# Display Ubuntu version
                 system("clear");
-		system("$CMCDir/ubuntuversion");
+		system("$RMCDir/ubuntuversion");
 		print "Press Enter To Continue: ";
 		my $entered = <STDIN>;
 	}
@@ -671,7 +671,7 @@ while (-1)
 	{
 		# Run bash shell
 		system("clear");
-		print "About to spawn a shell. Enter \"exit\" to exit and return to CMC\n";
+		print "About to spawn a shell. Enter \"exit\" to exit and return to RMC\n";
 		print "Press Enter To Continue:";
 		my $entered = <STDIN>;
 		system("clear");
