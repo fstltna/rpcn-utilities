@@ -11,7 +11,7 @@ my $InitDName = "/root/rpcn-utilities/startrpcn";
 my $RPCN_Source = "/root/rpcn";
 my $RPCNDIR = "/root/rpcn/target/release";
 my $BackupCommand = "/root/rpcn-utilities/rpcnbackup.pl -snapshot";
-my $RPCNLog = "/root/rpcn/rpcn.log";
+my $RPCNLog = "$RPCNDIR/RPCNScreen.log";
 my $RMCDir = "/root/rpcn-utilities";
 my $BackupToolDir = "/root/rpcn-utilities";
 my $StartupDir = "/root/rpcn-utilities";
@@ -445,6 +445,7 @@ while (-1)
 	elsif ($menuselection eq "11")
 	{
                 # View the log file
+		system("clear");
                 system("$PagerCommand $RPCNLog");
 	}
 	elsif ($menuselection eq "12")
