@@ -1,5 +1,5 @@
 # RPCN Management Console (1.0.0)
-Allows you to manage your RPCN server with a text based UI - 
+Allows you to manage your RPCN server with a text based UI
 
 ---
 
@@ -15,5 +15,10 @@ You will need to install the required perl modules (as root):
 
 - /root/rpcn-utilities/installdeps
 
+Add this line to your crontab:
+
+crontab -e
+
+@reboot nohup /root/rpcn-utilities/startrpcn 2>&1 > /dev/null &
 
 After that you should log out and back in and now "rmc" should work.
