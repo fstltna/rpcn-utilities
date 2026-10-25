@@ -68,7 +68,8 @@ my $menuselection = "";
 
 sub CheckServerStatus
 {
-	my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
+	my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep|grep -v /root/rpcn-utilities/rmc`;
+
 	if ($running ne "")
 	{
 		$ServerStatus = "Running";
@@ -201,7 +202,7 @@ sub DoRPCNUpdate
 		$entered = "";
 		chdir($RPCN_Source);
 		system("touch $RPCNDIR/nostart");
-		my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
+		my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep|grep -v /root/rpcn-utilities/rmc`;
 		if ($running ne "")
 		{
 			# Process is running, kill it
@@ -211,11 +212,12 @@ sub DoRPCNUpdate
 		}
 		system("git pull");
 	}
-	print "Did it work? If not address the issues and rerun this step again.\nPress Enter \"y\" To Continue: ";
+	print "Did it work? If not address the issues and rerun this step again.\nIf there was no new version you can enter \"n\" now.\nPress Enter \"y\" To recompile rpcn: ";
 	$entered = <STDIN>;
 	chop($entered);
 	if (($entered ne "y") && ($entered ne "Y"))
 	{
+		system("rm $RPCNDIR/nostart");
 		return;
 	}
 	print "Do you want to recompile RPCN? (N/y): ";
@@ -380,7 +382,7 @@ while (-1)
 	}
 	if ($menuselection eq "1")
 	{
-                if ($d->yesno( text => "Confirm starting the server watchdog", text => "Are you sure you want to start the server watchdog? You should likely use option #10 instead..." ))
+                if ($d->yesno( text => "Confirm starting the server watchdog", text => "Are you sure you want to start the server watchdog? You should likely use option #12 instead..." ))
                 {
                         system("$InitDName start");
                         sleep(10);

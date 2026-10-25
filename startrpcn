@@ -22,9 +22,9 @@ my $SCREENCMD = "/usr/bin/screen";
 # Set ENV vars
 $ENV{'TERM'} = "xterm-256color";
 
-my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep startrpcn|grep -v grep`;
+my $running=`ps ax|grep startrpcn|grep -v grep`;
 
-# check if RPCN process is running
+# check if RPCN startup process is running
 if ($running ne "")
 {
 	print "running '$running'\n";
@@ -36,7 +36,7 @@ while (-1)
 {
 	chdir $RPCNDIR;
 	# check if RPCN process is running
-	$running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
+	$running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep|grep -v /root/rpcn-utilities/rmc`;
 print "running2 '$running'\n";
 	if ($running eq "")
 	{
