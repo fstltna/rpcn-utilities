@@ -1,0 +1,5 @@
+1) Run the backup!
+2) Run the update. Keep an eye out for errors and do not rebuild RPCN
+   if the update fails.
+3) Server should restart when the update is done.
+

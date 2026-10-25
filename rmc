@@ -8,10 +8,10 @@ use Term::ANSIScreen qw(cls);
 
 my $FileEditor = "/bin/nano";
 my $InitDName = "/root/rpcn-utilities/startrpcn";
+my $RPCN_Source = "/root/rpcn";
 my $RPCNDIR = "/root/rpcn/target/release";
 my $BackupCommand = "/root/rpcn-utilities/rpcnbackup.pl -snapshot";
 my $RPCNLog = "/root/rpcn/rpcn.log";
-my $Pager = "/usr/bin/less";
 my $RMCDir = "/root/rpcn-utilities";
 my $BackupToolDir = "/root/rpcn-utilities";
 my $StartupDir = "/root/rpcn-utilities";
@@ -22,6 +22,7 @@ my $PagerCommand = "/usr/bin/less";
 my $DiskFreeCmd = "/usr/bin/df -h";
 my $MailQueueCmd = "/usr/bin/mailq";
 my $ShellCommand = "/usr/bin/bash";
+my $UpdateSteps = "$StartupDir/UpdateSteps.txt";
 
 ###################################################
 # No changes below here
@@ -167,9 +168,7 @@ sub UpdateToolsMenu
 		$WantRespawn="OFF";
 	}
 	$menuselection = $d->menu( title => "Update Utilities Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
-                            list => [ '1', 'Update RMC',
-                                      '2', 'Update Backup',
-                                      '3', 'Update Startup',
+                            list => [ '1', 'Update Utilities',
                                       'q', 'Main Menu' ] );
 }
 
@@ -187,25 +186,49 @@ sub UpdateTools
 			# Update RMC
 			DoUpdate($RMCDir);
 		}
-		elsif ($menuselection eq "2")
-		{
-			# Update BackupToolDir
-			DoUpdate($BackupToolDir);
-		}
-		elsif ($menuselection eq "3")
-		{
-			# Update Startup
-			DoUpdate($StartupDir);
-			if (! -d $BinDir)
-			{
-				print "Binary dir $BinDir not found, creating...\n";
-				system("mkdir -p $BinDir");
-			}
-			system("cp $StartupDir/coffeemud $BinDir");
-			system("cp $StartupDir/startcoffeemud $RPCNDIR");
-			system("cp $StartupDir/InstallUNIX-auto.sh $RPCNDIR");
-		}
 	}
+}
+
+sub DoRPCNUpdate
+{
+	# Rebuild RPCN
+	system("clear");
+	print "Do you want to pull updates from the repo (N/y): ";
+	my $entered = <STDIN>;
+	chop($entered);
+	if (($entered eq "y") || ($entered eq "Y"))
+	{
+		$entered = "";
+		chdir($RPCN_Source);
+		system("touch $RPCNDIR/nostart");
+		my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
+		if ($running ne "")
+		{
+			# Process is running, kill it
+			print "Killing RPCN process:\n";
+			system("killall rpcn");
+			sleep(5);
+		}
+		system("git pull");
+	}
+	print "Did it work? If not address the issues and rerun this step again.\nPress Enter \"y\" To Continue: ";
+	$entered = <STDIN>;
+	chop($entered);
+	if (($entered ne "y") && ($entered ne "Y"))
+	{
+		return;
+	}
+	print "Do you want to recompile RPCN? (N/y): ";
+	$entered = <STDIN>;
+	chop($entered);
+	if (($entered eq "y") || ($entered eq "Y"))
+	{
+		chdir($RPCN_Source);
+		system("cargo build --release");
+	}
+	print "All done! Press ENTER to continue: ";
+	$entered = <STDIN>;
+	system("rm $RPCNDIR/nostart");
 }
 
 sub UpdateRPCNMenu
@@ -220,10 +243,7 @@ sub UpdateRPCNMenu
 	$menuselection = $d->menu( title => "RPCN Update Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'How to Update',
                                       '2', 'Backup RPCN',
-                                      '3', 'Backup fakedb',
-                                      '4', 'Update CoffeMud',
-                                      '5', 'Fix Schema',
-                                      '6', 'Edit coffeemud.ini',
+                                      '3', 'Update RPCN',
                                       'q', 'Main Menu' ] );
 }
 
@@ -236,6 +256,12 @@ sub UpdateRPCN
 		{
 			return;
 		}
+		elsif ($menuselection eq "1")
+		{
+			# Display the update steps
+			system("clear");
+			system("$PagerCommand $UpdateSteps");
+		}
 		elsif ($menuselection eq "2")
 		{
 			# Run a backup
@@ -244,57 +270,10 @@ sub UpdateRPCN
 			print "Press Enter To Continue";
 			my $entered = <STDIN>;
 		}
-		elsif ($menuselection eq "4")
+		elsif ($menuselection eq "3")
 		{
-			# Rebuild RPCN
-			system("clear");
-			print "Do you want to pull updates from the repo (N/y): ";
-			my $entered = <STDIN>;
-			my $DidBuild = "n";
-			chop($entered);
-			if (($entered eq "y") || ($entered eq "Y"))
-			{
-				$entered = "";
-				$DidBuild = "y";
-				chdir($RPCNDIR);
-				system("touch $RPCNDIR/nostart");
-				my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
-				if ($running ne "")
-				{
-					# Process is running, kill it
-					print "Killing RPCN process:\n";
-					system("killall rpcn");
-					sleep(5);
-				}
-				system("cp coffeemud.ini coffeemud.ini-keep");
-				system("git pull");
-				print "Did it work? If not address the issues and rerun this step again.\nPress Enter To Continue: ";
-				$entered = <STDIN>;
-			}
-			print "Do you want to recompile RPCN? (N/y): ";
-			$entered = <STDIN>;
-			chop($entered);
-			if (($entered eq "y") || ($entered eq "Y"))
-			{
-				chdir($RPCNDIR);
-				system("./InstallUNIX-auto.sh");
-				if ($DidBuild eq "y")
-				{
-					system("cp coffeemud.ini-keep coffeemud.ini");
-				}
-			}
-			print "All done! Press ENTER to continue: ";
-			$entered = <STDIN>;
-		}
-		elsif ($menuselection eq "5")
-		{
-			# Fix Schema
-			FixSchema();
-		}
-		elsif ($menuselection eq "6")
-		{
-			# Edit coffeemud.ini file
-			system("$FileEditor $RPCNDIR/coffeemud.ini");
+			# Do the update
+			DoRPCNUpdate();
 		}
 	}
 }
@@ -464,7 +443,7 @@ while (-1)
 	elsif ($menuselection eq "11")
 	{
                 # View the log file
-                system("$Pager $RPCNLog");
+                system("$PagerCommand $RPCNLog");
 	}
 	elsif ($menuselection eq "12")
 	{
