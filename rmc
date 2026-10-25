@@ -7,25 +7,18 @@ use Term::ReadKey;
 use Term::ANSIScreen qw(cls);
 
 my $FileEditor = "/bin/nano";
-my $InitDName = "/home/cmowner/bin/coffeemud";
-my $COFFEEMUDDIR = "/home/cmowner/CoffeeMud";
-my $BackupCommand = "/home/cmowner/CoffeeBackup/coffeebackup.pl -snapshot";
-my $MUDLog = "/home/cmowner/CoffeeMud/mud.log";
+my $InitDName = "/root/rpcn-utilities/startrpcn";
+my $RPCNDIR = "/root/rpcn/target/release";
+my $BackupCommand = "/root/rpcn-utlities/rpcnbackup.pl -snapshot";
+my $RPCNLog = "/root/rpcn/rpcn.log";
 my $Pager = "/usr/bin/less";
-my $RMCDir = "/home/cmowner/CoffeeManagementConsole";
-my $BackupToolDir = "/home/cmowner/CoffeeBackup";
-my $StartupDir = "/home/cmowner/CoffeeStartup";
+my $RMCDir = "/root/rpcn-utilities";
+my $BackupToolDir = "/root/rpcn-utilities";
+my $StartupDir = "/root/rpcn-utilities";
 my $UpdateCommand = "/usr/bin/git pull";
-my $BinDir = "/home/cmowner/bin";
+my $BinDir = "/root/bin";
 my $DEBUG_MODE = "off";
-my $MUDPORT = "5555";
-my $TEXTDIR = "$COFFEEMUDDIR/resources/text";
-my $FAKEDBOLDDIR = "$COFFEEMUDDIR/oldcm/resources/fakedb";
-my $FAKEDBNEWDIR = "$COFFEEMUDDIR/resources/fakedb";
-my $UpdateStepsFile = "$RMCDir/UpdateSteps.txt";
-my $MigrateFakeDB = "$RMCDir/mudUpdate.sh";
 my $PagerCommand = "/usr/bin/less";
-my $TelnetCmd = "/usr/bin/telnet";
 my $DiskFreeCmd = "/usr/bin/df -h";
 my $MailQueueCmd = "/usr/bin/mailq";
 my $ShellCommand = "/usr/bin/bash";
@@ -98,41 +91,11 @@ sub DoUpdate
 	my $entered = <STDIN>;
 }
 
-sub EditTextMenu
-{
-	my $WantRespawn="ON";
-	CheckServerStatus();
-	if (-f "$COFFEEMUDDIR/nostart")
-	{
-		$WantRespawn="OFF";
-	}
-	$menuselection = $d->menu( title => "Edit Text Files Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
-                            list => [ '1', 'Blocked',
-                                      '2', 'Classes',
-                                      '3', 'Conblocked',
-                                      '4', 'Credits',
-                                      '5', 'DoneAcct.',
-                                      '6', 'Down',
-                                      '7', 'Email',
-                                      '8', 'Inclination',
-                                      '9', 'Newacct',
-                                      '10', 'NewCharDone',
-                                      '11', 'NewChar',
-                                      '12', 'NoLogins',
-                                      '13', 'Offline',
-                                      '14', 'Races',
-                                      '15', 'Rules',
-                                      '16', 'SelChar',
-                                      '17', 'Stats',
-                                      '18', 'Themes',
-                                      'q', 'Main Menu' ] );
-}
-
 sub SystemUtilMenu
 {
 	my $WantRespawn="ON";
 	CheckServerStatus();
-	if (-f "$COFFEEMUDDIR/nostart")
+	if (-f "$RPCNDIR/nostart")
 	{
 		$WantRespawn="OFF";
 	}
@@ -195,113 +158,11 @@ sub SystemUtilities
 	}
 }
 
-sub EditText
-{
-	while (-1)
-	{
-		EditTextMenu();
-		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
-		{
-			return;
-		}
-		elsif ($menuselection eq "1")
-		{
-			# Edit blocked.txt file
-			system("$FileEditor $TEXTDIR/blocked.txt");
-		}
-		elsif ($menuselection eq "2")
-		{
-			# Edit classes.txt file
-			system("$FileEditor $TEXTDIR/classes.txt");
-		}
-		elsif ($menuselection eq "3")
-		{
-			# Edit conblocked.txt file
-			system("$FileEditor $TEXTDIR/conblocked.txt");
-		}
-		elsif ($menuselection eq "4")
-		{
-			# Edit conblocked.txt file
-			system("$FileEditor $TEXTDIR/credits.txt");
-		}
-		elsif ($menuselection eq "5")
-		{
-			# Edit doneacct.txt file
-			system("$FileEditor $TEXTDIR/doneacct.txt");
-		}
-		elsif ($menuselection eq "6")
-		{
-			# Edit down.txt file
-			system("$FileEditor $TEXTDIR/down.txt");
-		}
-		elsif ($menuselection eq "7")
-		{
-			# Edit email.txt file
-			system("$FileEditor $TEXTDIR/email.txt");
-		}
-		elsif ($menuselection eq "8")
-		{
-			# Edit inclination.txt file
-			system("$FileEditor $TEXTDIR/inclination.txt");
-		}
-		elsif ($menuselection eq "9")
-		{
-			# Edit newacct.txt file
-			system("$FileEditor $TEXTDIR/newacct.txt");
-		}
-		elsif ($menuselection eq "10")
-		{
-			# Edit newchardone.txt file
-			system("$FileEditor $TEXTDIR/newchardone.txt");
-		}
-		elsif ($menuselection eq "11")
-		{
-			# Edit newchar.txt file
-			system("$FileEditor $TEXTDIR/newchar.txt");
-		}
-		elsif ($menuselection eq "12")
-		{
-			# Edit nologins.txt file
-			system("$FileEditor $TEXTDIR/nologins.txt");
-		}
-		elsif ($menuselection eq "13")
-		{
-			# Edit offline.txt file
-			system("$FileEditor $TEXTDIR/offline.txt");
-		}
-		elsif ($menuselection eq "14")
-		{
-			# Edit races.txt file
-			system("$FileEditor $TEXTDIR/races.txt");
-		}
-		elsif ($menuselection eq "15")
-		{
-			# Edit rules.txt file
-			system("$FileEditor $TEXTDIR/rules.txt");
-		}
-		elsif ($menuselection eq "16")
-		{
-			# Edit selchar.txt file
-			system("$FileEditor $TEXTDIR/selchar.txt");
-		}
-		elsif ($menuselection eq "17")
-		{
-			# Edit stats.txt file
-			system("$FileEditor $TEXTDIR/stats.txt");
-		}
-		elsif ($menuselection eq "18")
-		{
-			# Edit themes.txt file
-			system("$FileEditor $TEXTDIR/themes.txt");
-		}
-	}
-}
-
 sub UpdateToolsMenu
 {
 	my $WantRespawn="ON";
 	CheckServerStatus();
-	if (-f "$COFFEEMUDDIR/nostart")
+	if (-f "$RPCNDIR/nostart")
 	{
 		$WantRespawn="OFF";
 	}
@@ -341,24 +202,24 @@ sub UpdateTools
 				system("mkdir -p $BinDir");
 			}
 			system("cp $StartupDir/coffeemud $BinDir");
-			system("cp $StartupDir/startcoffeemud $COFFEEMUDDIR");
-			system("cp $StartupDir/InstallUNIX-auto.sh $COFFEEMUDDIR");
+			system("cp $StartupDir/startcoffeemud $RPCNDIR");
+			system("cp $StartupDir/InstallUNIX-auto.sh $RPCNDIR");
 		}
 	}
 }
 
-sub UpdateCMMenu
+sub UpdateRPCNMenu
 {
 	my $WantRespawn="ON";
 	CheckServerStatus();
-	if (-f "$COFFEEMUDDIR/nostart")
+	if (-f "$RPCNDIR/nostart")
 	{
 		$WantRespawn="OFF";
 	}
 
 	$menuselection = $d->menu( title => "RPCN Update Menu", text => "Server is $ServerStatus and respawn is $WantRespawn - Select one:",
                             list => [ '1', 'How to Update',
-                                      '2', 'Backup MUD',
+                                      '2', 'Backup RPCN',
                                       '3', 'Backup fakedb',
                                       '4', 'Update CoffeMud',
                                       '5', 'Fix Schema',
@@ -366,27 +227,14 @@ sub UpdateCMMenu
                                       'q', 'Main Menu' ] );
 }
 
-sub FixSchema
-{
-	print "Schema update proceding...\n";
-	system("$MigrateFakeDB");
-	print "Completed. Did it work?\n";
-	sleep(5);
-}
-
-sub UpdateCM
+sub UpdateRPCN
 {
 	while (-1)
 	{
-		UpdateCMMenu();
+		UpdateRPCNMenu();
 		if (($menuselection eq "CANCEL") || ($menuselection eq "ESC") || ($menuselection eq "") || ($menuselection eq "q") || ($menuselection eq "Q"))
 		{
 			return;
-		}
-		elsif ($menuselection eq "1")
-		{
-			# View update steps
-			system("$Pager $UpdateStepsFile");
 		}
 		elsif ($menuselection eq "2")
 		{
@@ -396,22 +244,9 @@ sub UpdateCM
 			print "Press Enter To Continue";
 			my $entered = <STDIN>;
 		}
-		elsif ($menuselection eq "3")
-		{
-			# Backup fakedb
-			system("clear");
-			if (! -d $FAKEDBOLDDIR)
-			{
-				print "$FAKEDBOLDDIR doesnt exist, creating:\n";
-				system("mkdir -p $FAKEDBOLDDIR");
-			}
-			system("cp -r $FAKEDBNEWDIR/* $FAKEDBOLDDIR");
-			print "Fakedb settings copied\n";
-			sleep(5);
-		}
 		elsif ($menuselection eq "4")
 		{
-			# Rebuild CoffeeMud
+			# Rebuild RPCN
 			system("clear");
 			print "Do you want to pull updates from the repo (N/y): ";
 			my $entered = <STDIN>;
@@ -421,14 +256,14 @@ sub UpdateCM
 			{
 				$entered = "";
 				$DidBuild = "y";
-				chdir($COFFEEMUDDIR);
-				system("touch $COFFEEMUDDIR/nostart");
+				chdir($RPCNDIR);
+				system("touch $RPCNDIR/nostart");
 				my $running=`ps ax|grep rpcn|grep -v rpcn.gameplayer.club|grep -v startrpcn|grep -v grep`;
 				if ($running ne "")
 				{
 					# Process is running, kill it
-					print "Killing CoffeeMud process:\n";
-					system("killall java");
+					print "Killing RPCN process:\n";
+					system("killall rpcn");
 					sleep(5);
 				}
 				system("cp coffeemud.ini coffeemud.ini-keep");
@@ -436,12 +271,12 @@ sub UpdateCM
 				print "Did it work? If not address the issues and rerun this step again.\nPress Enter To Continue: ";
 				$entered = <STDIN>;
 			}
-			print "Do you want to recompile CoffeeMud? (N/y): ";
+			print "Do you want to recompile RPCN? (N/y): ";
 			$entered = <STDIN>;
 			chop($entered);
 			if (($entered eq "y") || ($entered eq "Y"))
 			{
-				chdir($COFFEEMUDDIR);
+				chdir($RPCNDIR);
 				system("./InstallUNIX-auto.sh");
 				if ($DidBuild eq "y")
 				{
@@ -459,7 +294,7 @@ sub UpdateCM
 		elsif ($menuselection eq "6")
 		{
 			# Edit coffeemud.ini file
-			system("$FileEditor $COFFEEMUDDIR/coffeemud.ini");
+			system("$FileEditor $RPCNDIR/coffeemud.ini");
 		}
 	}
 }
@@ -468,7 +303,7 @@ sub ProcesKillMenu
 {
         my $WantRespawn="ON";
         CheckServerStatus();
-        if (-f "$COFFEEMUDDIR/nostart")
+        if (-f "$RPCNDIR/nostart")
         {
                 $WantRespawn="OFF";
         }
@@ -495,7 +330,7 @@ sub ProcessKill
 			{
 				# Reset the server process
 				print "Killing mud process, please wait...";
-				system("killall java");
+				system("killall rpcn");
 				sleep(10);
 			}
 			else
@@ -508,12 +343,12 @@ sub ProcessKill
                 elsif ($menuselection eq "2")
                 {
                         # Force-kill server process
-                        if ($d->yesno( text => "Confirm force-killing MUD process", text => "Are you *SURE* you want to force kill the MUD process?\nYou should first try the \#1 option and see if that works" ))
+                        if ($d->yesno( text => "Confirm force-killing RPCN process", text => "Are you *SURE* you want to force kill the RPCN process?\nYou should first try the \#1 option and see if that works" ))
                         {
 				if ($ServerStatus eq "Running")
 				{
 					print "Force-killing mud process, please wait for 5 seconds...";
-					system("killall -s9 java");
+					system("killall -s9 rpcn");
 					sleep(5);
 				}
 				else
@@ -530,7 +365,7 @@ sub MainMenu
 {
 	my $WantRespawn="ON";
 	CheckServerStatus();
-	if (-f "$COFFEEMUDDIR/nostart")
+	if (-f "$RPCNDIR/nostart")
 	{
 		$WantRespawn="OFF";
 	}
@@ -541,19 +376,18 @@ sub MainMenu
                                       '3', 'Server Console',
                                       '4', 'Turn Respawn Off',
                                       '5', 'Turn Respawn On',
-                                      '6', 'Edit mudUNIX.sh',
-                                      '7', 'Edit coffeemud.ini',
-                                      '8', 'Backup MUD',
-                                      '9', 'View MUD Log',
-                                      '10', 'Kill MUD Process',
-                                      '11', 'Edit intro.txt',
-                                      '12', 'Update Utils',
-                                      'XXX', 'Update CoffeeMud',
-                                      '14', 'Connect to MUD',
-                                      '15', 'Edit Texts',
-                                      '16', 'Ubuntu Version',
-                                      '17', 'Utilities',
-                                      '18', 'Spawn Shell',
+                                      '6', 'Edit rpcn.cfg',
+                                      '7', 'Edit scoreboards',
+                                      '8', 'Edit server_redirs.cfg',
+                                      '9', 'Edit servers.cfg',
+                                      '10', 'Backup RPCN',
+                                      '11', 'View RPCN Log',
+                                      '12', 'Kill RPCN Process',
+                                      '13', 'Update Utils',
+                                      '14', 'Update RPCN',
+                                      '15', 'Ubuntu Version',
+                                      '16', 'Utilities',
+                                      '17', 'Spawn Shell',
                                       'q', 'Quit RMC' ] );
 }
 
@@ -589,27 +423,37 @@ while (-1)
 	elsif ($menuselection eq "4")
 	{
 		# Turn off respawn
-		system("touch $COFFEEMUDDIR/nostart");
+		system("touch $RPCNDIR/nostart");
 	}
 	elsif ($menuselection eq "5")
 	{
 		# Turn respawn back on
-		if (-f "$COFFEEMUDDIR/nostart")
+		if (-f "$RPCNDIR/nostart")
 		{
-			unlink("$COFFEEMUDDIR/nostart");
+			unlink("$RPCNDIR/nostart");
 		}
 	}
 	elsif ($menuselection eq "6")
 	{
-		# Edit mudUNIX.sh file
-		system("$FileEditor $COFFEEMUDDIR/mudUNIX.sh");
+		# Edit rpcn.cfg file
+		system("$FileEditor $RPCNDIR/rpcn.cfg");
 	}
 	elsif ($menuselection eq "7")
 	{
-		# Edit coffeemud.ini file
-		system("$FileEditor $COFFEEMUDDIR/coffeemud.ini");
+		# Edit scoreboards file
+		system("$FileEditor $RPCNDIR/scoreboards.cfg");
 	}
 	elsif ($menuselection eq "8")
+	{
+		# Edit server_redirs.cfg file
+		system("$FileEditor $RPCNDIR/server_redirs.cfg");
+	}
+	elsif ($menuselection eq "9")
+	{
+		# Edit servers.cfg file
+		system("$FileEditor $RPCNDIR/servers.cfg");
+	}
+	elsif ($menuselection eq "10")
 	{
                 # Run a backup
                 system("clear");
@@ -617,44 +461,26 @@ while (-1)
                 print "Press Enter To Continue";
                 my $entered = <STDIN>;
 	}
-	elsif ($menuselection eq "9")
+	elsif ($menuselection eq "11")
 	{
                 # View the log file
-                system("$Pager $MUDLog");
+                system("$Pager $RPCNLog");
 	}
-	elsif ($menuselection eq "10")
+	elsif ($menuselection eq "12")
 	{
 		ProcessKill();
 	}
-	elsif ($menuselection eq "11")
-	{
-		# Edit intro.txt file
-		system("$FileEditor $TEXTDIR/intro.txt");
-	}
-	elsif ($menuselection eq "12")
+	elsif ($menuselection eq "13")
 	{
 		# Update Menu
 		UpdateTools();
 	}
-	elsif ($menuselection eq "XXX")
-	{
-		# Update CoffeeMud
-		UpdateCM();
-	}
 	elsif ($menuselection eq "14")
 	{
-		# Telnet to MUD
-                system("clear");
-		system("$TelnetCmd localhost $MUDPORT");
-		print "Press Enter To Continue: ";
-		my $entered = <STDIN>;
+		# Update RPCN
+		UpdateRPCN();
 	}
 	elsif ($menuselection eq "15")
-	{
-		# Text File Menu
-		EditText();
-	}
-	elsif ($menuselection eq "16")
 	{
 		# Display Ubuntu version
                 system("clear");
@@ -662,12 +488,12 @@ while (-1)
 		print "Press Enter To Continue: ";
 		my $entered = <STDIN>;
 	}
-	elsif ($menuselection eq "17")
+	elsif ($menuselection eq "16")
 	{
 		# Run utilities
 		SystemUtilities();
 	}
-	elsif ($menuselection eq "18")
+	elsif ($menuselection eq "17")
 	{
 		# Run bash shell
 		system("clear");
