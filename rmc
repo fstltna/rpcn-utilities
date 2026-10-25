@@ -9,7 +9,7 @@ use Term::ANSIScreen qw(cls);
 my $FileEditor = "/bin/nano";
 my $InitDName = "/root/rpcn-utilities/startrpcn";
 my $RPCNDIR = "/root/rpcn/target/release";
-my $BackupCommand = "/root/rpcn-utlities/rpcnbackup.pl -snapshot";
+my $BackupCommand = "/root/rpcn-utilities/rpcnbackup.pl -snapshot";
 my $RPCNLog = "/root/rpcn/rpcn.log";
 my $Pager = "/usr/bin/less";
 my $RMCDir = "/root/rpcn-utilities";
